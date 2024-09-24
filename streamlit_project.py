@@ -28,7 +28,7 @@ df = load_data()
 teams = get_teams(df)
 
 # Team selection
-team = st.selectbox('Select a team', teams, index=None)
+team = st.selectbox('Select a national team', teams, index=None)
 
 # Get players for the selected team
 if team:
