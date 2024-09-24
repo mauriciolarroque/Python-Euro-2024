@@ -19,7 +19,7 @@ def get_players(df, team):
     return df[df['team'] == team]['player'].sort_values().unique()
 
 st.title("Euro 2024 Shots Map")
-st.subheader('Filter to any team/player to see all the shots that were taken')
+st.subheader('Filter to any team to visualize all shots at goal that were taken')
 
 # Load the data once
 df = load_data()
