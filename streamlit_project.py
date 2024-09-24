@@ -3,31 +3,44 @@ import pandas as pd
 import json
 from mplsoccer import VerticalPitch
 
-# Caching the data loading
-@st.cache_data
+@st.cache_resource
 def load_data():
     df = pd.read_csv('euros_2024_shot_map(1).csv')
     df = df[df['type'] == 'Shot'].reset_index(drop=True)
     df['location'] = df['location'].apply(json.loads)
     return df
 
+@st.cache_data
+def get_teams(df):
+    return df['team'].sort_values().unique()
+
+@st.cache_data
+def get_players(df, team):
+    return df[df['team'] == team]['player'].sort_values().unique()
+
 st.title("Euro 2024 Shots Map")
 st.subheader('Filter to any team/player to see all the shots that were taken')
 
-# Load the data once and cache it
+# Load the data once
 df = load_data()
 
+# Get teams
+teams = get_teams(df)
+
 # Team selection
-team = st.selectbox('Select a team', df['team'].sort_values().unique(), index=None)
+team = st.selectbox('Select a team', teams, index=None)
 
-# Filter by team first
-filtered_team_df = df[df['team'] == team] if team else df
+# Get players for the selected team
+if team:
+    players = get_players(df, team)
+    player = st.selectbox('Select a player', players, index=None)
+else:
+    player = None
 
-# Player selection
-player = st.selectbox('Select a player', filtered_team_df['player'].sort_values().unique(), index=None)
-
-# Further filter by player
-filtered_df = filtered_team_df[filtered_team_df['player'] == player] if player else filtered_team_df
+# Filter data based on selections
+filtered_df = df[df['team'] == team]
+if player:
+    filtered_df = filtered_df[filtered_df['player'] == player]
 
 # Prepare the pitch
 pitch = VerticalPitch(pitch_type='statsbomb', half=True)
@@ -47,7 +60,7 @@ def plot_shots(df, ax, pitch):
             zorder=2 if x['shot_outcome'] == 'Goal' else 1 
         )
 
-# Plot the shots
+# Plot the shots if there are any
 if not filtered_df.empty:
     plot_shots(filtered_df, ax, pitch)
 
