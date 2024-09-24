@@ -8,7 +8,7 @@ import json
 st.title("Euro 2024 Shots Map")
 
 
-st.subheader('Filter to any team/player to see shots taken')
+st.subheader('Filter to any team/player to see all the shots that were taken')
 
 df = pd.read_csv('euros_2024_shot_map(1).csv')
 
