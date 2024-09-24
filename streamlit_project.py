@@ -42,6 +42,10 @@ filtered_df = df[df['team'] == team]
 if player:
     filtered_df = filtered_df[filtered_df['player'] == player]
 
+# Limit number of shots for visualization
+LIMIT = 100  # Adjust this limit as necessary
+filtered_df = filtered_df.head(LIMIT)
+
 # Prepare the pitch
 pitch = VerticalPitch(pitch_type='statsbomb', half=True)
 fig, ax = pitch.draw(figsize=(10, 10))
